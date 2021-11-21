@@ -21,6 +21,7 @@ scene("game", () => {
 		scale(1),
 		area(),
 		body(),
+		PlayerHealth(),
 		"player"
 	]);
 
@@ -72,6 +73,37 @@ scene("game", () => {
 		// 	bullets[i].pos.x += playerDirection * bulletSpeed;
 		// }
 	});
+
+	function PlayerHealth() {
+		let enabled = true;
+		return {
+			id: "PlayerHealth",
+			health: 100,
+			maxhealth: 100,
+			resetHealth() {
+				this.health = this.maxhealth;
+			},
+			Die() {
+				destroy(this);
+			},
+			add() {
+				this.resetHealth();
+			},
+			GainHealth(amount) {
+				this.health += amount;
+				if(this.health > this.maxhealth) {
+					this.resetHealth();
+				}
+			},
+			TakeDamage(amount) {
+				this.health -= amount;
+				if(this.health < 0) {
+					this.health = 0;
+					this.Die();
+				}
+			}
+		}
+	}
 
 	function EnemyHealth() {
 		let enabled = true;
