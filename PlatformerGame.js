@@ -69,6 +69,9 @@ scene("game", () => {
 		}
 
 		// // Shooting mechanic
+		// if(isKeyReleased("f")) {
+		// 	Shoot();
+		// }
 		// for(let i = 0; i < bullets.length; i++) {
 		// 	bullets[i].pos.x += playerDirection * bulletSpeed;
 		// }
@@ -157,7 +160,10 @@ scene("game", () => {
 	onClick(() => {
 		Shoot();
 	});
-	
+
+	// onKeyDown("f", () => {
+	// 	Shoot();
+	// });
 });
 
 const init = (() => {
