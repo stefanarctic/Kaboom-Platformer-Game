@@ -36,15 +36,7 @@ scene("game", () => {
 		"obstacle"
 	]);
 
-	const enemy = add([
-		sprite("ghost"),
-		pos(width() - 150, player.pos.y),
-		scale(1),
-		area(),
-		body(),
-		EnemyHealth(),
-		"enemy"
-	]);
+	SpawnEnemy();
 
 	function Jump() {
 		if(player.isGrounded()) {
@@ -92,11 +84,15 @@ scene("game", () => {
 			add() {
 				this.resetHealth();
 			},
+			UpdateUI() {
+				playerHealthUI.text = `Health: ${this.health}`;
+			},
 			GainHealth(amount) {
 				this.health += amount;
 				if(this.health > this.maxhealth) {
 					this.resetHealth();
 				}
+				this.UpdateUI();
 			},
 			TakeDamage(amount) {
 				this.health -= amount;
@@ -104,6 +100,7 @@ scene("game", () => {
 					this.health = 0;
 					this.Die();
 				}
+				this.UpdateUI();
 			}
 		}
 	}
@@ -123,11 +120,16 @@ scene("game", () => {
 			add() {
 				this.resetHealth();
 			},
+			UpdateUI() {
+				this.healthUI.text = `Health: ${this.health}`;
+				if(this.health === 0) destroy(this.healthUI);
+			},
 			GainHealth(amount) {
 				this.health += amount;
 				if(this.health > this.maxhealth) {
 					this.resetHealth();
 				}
+				this.UpdateUI();
 			},
 			TakeDamage(amount) {
 				this.health -= amount;
@@ -135,6 +137,7 @@ scene("game", () => {
 					this.health = 0;
 					this.Die();
 				}
+				this.UpdateUI();
 			}
 		}
 	}
@@ -161,9 +164,46 @@ scene("game", () => {
 		Shoot();
 	});
 
+	let enemies = [];
+
+	function SpawnEnemy() {
+		const enemy = add([
+			sprite("ghost"),
+			pos(width() - 200, player.pos.y),
+			scale(1),
+			area(),
+			body(),
+			EnemyHealth(),
+			"enemy"
+		]);
+		const followOffset = vec2(-50, -40);
+		const enemyHealthUI = add([
+			pos(),
+			// origin("center"),
+			follow(enemy, followOffset),
+			text("Health"),
+			scale(0.3)
+		]);
+		enemy.healthUI = enemyHealthUI;
+		enemy.UpdateUI();
+		enemy.onUpdate(() => {
+			enemyHealthUI.follow.offset = followOffset;
+		})
+		// enemies.push(enemy);
+	}
+
 	// onKeyDown("f", () => {
 	// 	Shoot();
 	// });
+
+	// UI
+	const playerHealthUI = add([
+		pos(12, 12),
+		scale(0.5),
+		text("Health: ")
+	]);
+
+	player.UpdateUI();
 });
 
 const init = (() => {
