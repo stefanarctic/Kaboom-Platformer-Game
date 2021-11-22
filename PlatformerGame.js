@@ -36,8 +36,6 @@ scene("game", () => {
 		"obstacle"
 	]);
 
-	SpawnEnemy();
-
 	function Jump() {
 		if(player.isGrounded()) {
 			player.jump();
@@ -189,8 +187,10 @@ scene("game", () => {
 		enemy.onUpdate(() => {
 			enemyHealthUI.follow.offset = followOffset;
 		})
-		// enemies.push(enemy);
+		enemies.push(enemy);
 	}
+
+	SpawnEnemy();
 
 	// onKeyDown("f", () => {
 	// 	Shoot();
